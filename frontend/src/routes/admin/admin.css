@@ -1,0 +1,180 @@
+/*
+ * The dashboard is a tool, not a shop window. Dark, dense, tabular; the house
+ * red appears only where something is destructive or currently selected.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+.admin {
+	--ink: oklch(0.94 0.005 250);
+	--dim: oklch(0.68 0.012 250);
+	--faint: oklch(0.52 0.014 250);
+	--bg: oklch(0.19 0.012 260);
+	--panel: oklch(0.235 0.014 260);
+	--raised: oklch(0.28 0.016 260);
+	--line: oklch(0.34 0.016 260);
+	--brand: oklch(0.62 0.17 27);
+	--brand-dim: oklch(0.42 0.11 27);
+	--good: oklch(0.72 0.14 155);
+	--warn: oklch(0.78 0.13 85);
+	--mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+	--sans: 'Bricolage Grotesque', system-ui, sans-serif;
+
+	min-height: 100svh;
+	background: var(--bg);
+	color: var(--ink);
+	font-family: var(--sans);
+	font-size: 0.9rem;
+	line-height: 1.5;
+}
+
+.admin :focus-visible {
+	outline: 2px solid var(--brand);
+	outline-offset: 2px;
+}
+
+.admin h1,
+.admin h2,
+.admin h3 {
+	margin: 0;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+}
+
+.admin a {
+	color: var(--ink);
+}
+
+.admin .num {
+	font-family: var(--mono);
+	font-variant-numeric: tabular-nums;
+}
+
+.admin .label {
+	display: block;
+	font-size: 0.66rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--faint);
+	margin-bottom: 0.3rem;
+}
+
+.admin input,
+.admin textarea,
+.admin select {
+	width: 100%;
+	min-height: 2.5rem;
+	padding: 0.45rem 0.6rem;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	background: var(--bg);
+	color: var(--ink);
+	font: inherit;
+	font-size: 0.88rem;
+}
+
+.admin textarea {
+	min-height: 6rem;
+	resize: vertical;
+	line-height: 1.55;
+}
+
+.admin input:focus,
+.admin textarea:focus,
+.admin select:focus {
+	border-color: var(--brand);
+	outline: none;
+}
+
+.admin input::placeholder,
+.admin textarea::placeholder {
+	color: var(--faint);
+}
+
+.admin .btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	min-height: 2.5rem;
+	padding: 0 0.9rem;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	background: var(--raised);
+	color: var(--ink);
+	font: inherit;
+	font-size: 0.85rem;
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.admin .btn:hover {
+	border-color: var(--faint);
+}
+
+.admin .btn.primary {
+	background: var(--brand);
+	border-color: var(--brand);
+	color: oklch(0.99 0 0);
+}
+
+.admin .btn.primary:hover {
+	background: oklch(0.56 0.18 27);
+}
+
+.admin .btn.danger {
+	color: oklch(0.78 0.15 27);
+}
+
+.admin .btn.danger:hover {
+	background: var(--brand-dim);
+	border-color: var(--brand);
+	color: oklch(0.99 0 0);
+}
+
+.admin .btn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.admin .panel {
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 6px;
+}
+
+.admin .tag {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.1rem 0.4rem;
+	border-radius: 3px;
+	font-family: var(--mono);
+	font-size: 0.66rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.admin .tag.new {
+	background: color-mix(in oklch, var(--good) 22%, transparent);
+	color: var(--good);
+}
+
+.admin .tag.edited {
+	background: color-mix(in oklch, var(--warn) 22%, transparent);
+	color: var(--warn);
+}
+
+.admin .tag.seed {
+	background: var(--raised);
+	color: var(--faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.admin * {
+		transition-duration: 0.01ms !important;
+	}
+}

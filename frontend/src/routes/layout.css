@@ -1,1 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Kalnia:wght@400;500;600&display=swap');
 @import 'tailwindcss';
+
+:root {
+	--bg: oklch(0.97 0.012 25);
+	--surface: oklch(0.99 0.006 25);
+	--ink: oklch(0.24 0.04 25);
+	--primary: oklch(0.5 0.19 27);
+	--accent: oklch(0.28 0.06 25);
+	--muted: oklch(0.42 0.035 25);
+	--on-primary: oklch(0.98 0.01 25);
+	--z-skip: 40;
+	--z-header: 30;
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	/* LV holds an ~8% gutter and lets content run wide, rather than capping at a
+	   reading measure. Prose keeps its own narrower measure inside this. */
+	--page-pad: clamp(1.1rem, 8.3vw, 8.2rem);
+	--grid-gap: 0.75rem;
+	--measure: 65ch;
+}
+
+@theme inline {
+	--font-display: 'Kalnia', serif;
+	--font-sans: 'Bricolage Grotesque', sans-serif;
+	--color-bg: var(--bg);
+	--color-surface: var(--surface);
+	--color-ink: var(--ink);
+	--color-primary: var(--primary);
+	--color-accent: var(--accent);
+	--color-muted: var(--muted);
+}
+
+html {
+	background: var(--bg);
+	color: var(--ink);
+}
+
+body {
+	margin: 0;
+	min-height: 100svh;
+	background: var(--bg);
+	color: var(--ink);
+	font-family: var(--font-sans);
+	font-size: 1.0625rem;
+	line-height: 1.55;
+	font-optical-sizing: auto;
+}
+
+h1,
+h2,
+.word {
+	font-family: var(--font-display);
+	font-weight: 500;
+}
+
+a {
+	color: var(--primary);
+}
+
+a:hover {
+	color: var(--accent);
+}
+
+:focus-visible {
+	outline: 2px solid var(--primary);
+	outline-offset: 3px;
+}
+
+.skip-link {
+	position: absolute;
+	z-index: var(--z-skip);
+	top: 0.75rem;
+	left: var(--page-pad);
+	transform: translateY(-150%);
+	background: var(--primary);
+	color: var(--on-primary);
+	padding: 0.5rem 0.85rem;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.skip-link:focus {
+	transform: none;
+}
+
+.wrap {
+	width: min(1600px, calc(100% - 2 * var(--page-pad)));
+	margin-inline: auto;
+}
+
+.prose {
+	max-width: var(--measure);
+}
+
+.prose h1,
+.prose h2 {
+	text-wrap: balance;
+	font-family: var(--font-display);
+	font-weight: 400;
+	line-height: 1.2;
+}
+
+.prose h1 {
+	font-size: clamp(2rem, 5vw, 3.2rem);
+	letter-spacing: -0.02em;
+}
+
+.prose h2 {
+	margin-top: 2rem;
+	font-size: 1.5rem;
+}
+
+.prose p,
+.prose li {
+	text-wrap: pretty;
+	color: var(--ink);
+}
+
+.prose table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.95rem;
+}
+
+.prose th,
+.prose td {
+	border-bottom: 1px solid color-mix(in oklch, var(--ink) 14%, transparent);
+	padding: 0.55rem 0.4rem;
+	text-align: left;
+}
+
+.prose th {
+	color: var(--muted);
+	font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* --- Paper -------------------------------------------------------------- */
+
+/* Shop paper, not screen white: a faint fibre laid over the off-white so large
+   fields of background have something in them at close range. */
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	opacity: 0.5;
+	background-image:
+		repeating-linear-gradient(92deg, oklch(0.24 0.04 25 / 0.022) 0 1px, transparent 1px 3px),
+		repeating-linear-gradient(2deg, oklch(0.24 0.04 25 / 0.016) 0 1px, transparent 1px 4px);
+}
+
+/* --- Page turns --------------------------------------------------------- */
+
+@view-transition {
+	navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 0.24s;
+	animation-timing-function: var(--ease-out-expo);
+}
+
+::view-transition-old(root) {
+	animation-name: page-out;
+}
+
+::view-transition-new(root) {
+	animation-name: page-in;
+}
+
+@keyframes page-out {
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes page-in {
+	from {
+		opacity: 0;
+		transform: translateY(0.6rem);
+	}
+}
+
+/* --- Prose -------------------------------------------------------------- */
+
+.prose {
+	padding-bottom: clamp(2.5rem, 6vw, 4rem);
+}
+
+.prose > p,
+.prose > ul,
+.prose > ol {
+	margin-block: 1rem;
+}
+
+.prose ul,
+.prose ol {
+	padding-left: 1.2rem;
+}
+
+.prose li + li {
+	margin-top: 0.35rem;
+}
+
+.prose h2 + p {
+	margin-top: 0.6rem;
+}
+
+.prose table {
+	margin-block: 1.2rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.prose caption {
+	caption-side: bottom;
+	padding-top: 0.5rem;
+	color: var(--muted);
+	font-size: 0.85rem;
+	text-align: left;
+}
+
+/* Wide tables scroll in their own box rather than pushing the page sideways. */
+.scroller {
+	overflow-x: auto;
+	overscroll-behavior-x: contain;
+}
+
+.prose a {
+	text-underline-offset: 0.18em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none;
+	}
+}
