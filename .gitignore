@@ -1,0 +1,21 @@
+.DS_Store
+node_modules
+.env
+.env.local
+*.log
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# Python
+.venv
+venv
+__pycache__
+*.py[cod]
+.pytest_cache
+
+# SvelteKit / Vite
+.svelte-kit
+.output
+build
+dist

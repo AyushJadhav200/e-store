@@ -1,0 +1,9 @@
+{
+  "name": "e-store",
+  "private": true,
+  "scripts": {
+    "install:frontend": "npm --prefix frontend install",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "cd backend && .venv/bin/uvicorn app.main:app --reload --port 8000"
+  }
+}
