@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Kalnia:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&display=swap');
 @import 'tailwindcss';
 
 :root {
 	--bg: oklch(0.97 0.012 25);
 	--surface: oklch(0.99 0.006 25);
 	--ink: oklch(0.24 0.04 25);
-	--primary: oklch(0.5 0.19 27);
-	--accent: oklch(0.28 0.06 25);
+	--primary: oklch(0.42 0.21 25);
+	--accent: oklch(0.26 0.07 25);
 	--muted: oklch(0.42 0.035 25);
 	--on-primary: oklch(0.98 0.01 25);
 	--z-skip: 40;
@@ -20,7 +20,8 @@
 }
 
 @theme inline {
-	--font-display: 'Kalnia', serif;
+	--font-display: 'Cinzel', 'Cormorant Garamond', serif;
+	--font-brand: 'Cinzel', serif;
 	--font-sans: 'Bricolage Grotesque', sans-serif;
 	--color-bg: var(--bg);
 	--color-surface: var(--surface);

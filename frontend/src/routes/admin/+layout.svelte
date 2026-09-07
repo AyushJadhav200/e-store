@@ -21,7 +21,7 @@
 <div class="admin">
 	<header class="top">
 		<a class="brand" href={resolve('/admin')}>
-			<span class="glyph" aria-hidden="true"></span>
+			<img src="/velcello-logo.jpg" alt={BRAND} class="admin-logo-img" />
 			<span>{BRAND}<em>/admin</em></span>
 		</a>
 
@@ -81,34 +81,14 @@
 		color: var(--faint);
 	}
 
-	/* The ply twist, flattened to a monochrome tile for a tool bar. */
-	.glyph {
-		width: 1.5rem;
-		height: 1.5rem;
-		border-radius: 5px;
-		background:
-			radial-gradient(circle at 30% 25%, oklch(0.66 0.18 30), oklch(0.45 0.16 26)), var(--brand);
-		position: relative;
-		overflow: hidden;
+	.admin-logo-img {
+		width: 1.6rem;
+		height: 1.6rem;
+		border-radius: 4px;
+		object-fit: cover;
 	}
 
-	.glyph::before,
-	.glyph::after {
-		content: '';
-		position: absolute;
-		inset: -20% 34%;
-		border-radius: 999px;
-		background: oklch(0.97 0.01 40);
-	}
 
-	.glyph::before {
-		transform: rotate(24deg);
-	}
-
-	.glyph::after {
-		transform: rotate(-24deg);
-		clip-path: inset(52% 0 0 0);
-	}
 
 	nav {
 		display: flex;

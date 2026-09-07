@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import type { Snippet } from 'svelte';
 	import Mark from './Mark.svelte';
+	import { BRAND } from '$lib/brand';
 
 	let {
 		title,
@@ -12,7 +13,7 @@
 
 <header class="page-head wrap">
 	<Mark size={52} />
-	<p class="crumb"><a href={resolve('/')}>PLY</a> · The shop</p>
+	<p class="crumb"><a href={resolve('/')}>{BRAND}</a> · The shop</p>
 	<h1>{title}</h1>
 	{#if standfirst}<p class="standfirst">{standfirst}</p>{/if}
 </header>

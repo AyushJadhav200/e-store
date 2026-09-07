@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import Mark from './Mark.svelte';
 	import { departments } from '$lib/catalog';
+	import { BRAND, TAGLINE } from '$lib/brand';
 
 	const year = new Date().getFullYear();
 
@@ -13,8 +14,8 @@
 	<div class="wrap grid">
 		<div class="sign">
 			<Mark size={64} />
-			<p class="word">PLY</p>
-			<p class="line">Good fabric, made up in India. A short list, not a catalogue.</p>
+			<p class="word">{BRAND}</p>
+			<p class="line">{TAGLINE}</p>
 		</div>
 
 		<nav aria-label="Cloths">
@@ -54,7 +55,7 @@
 	</div>
 
 	<p class="foot wrap">
-		© {year} PLY. Prices include GST. Measurements you enter stay on your own device.
+		© {year} {BRAND}. Prices include GST. Measurements you enter stay on your own device.
 	</p>
 </footer>
 
@@ -77,10 +78,10 @@
 
 	.word {
 		margin: 0;
-		font-family: var(--font-sans);
-		font-weight: 800;
-		font-size: 1.6rem;
-		letter-spacing: 0.02em;
+		font-family: 'Cinzel', serif;
+		font-weight: 600;
+		font-size: 1.75rem;
+		letter-spacing: 0.24em;
 		text-transform: uppercase;
 		color: var(--primary);
 		line-height: 1;

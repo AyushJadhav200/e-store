@@ -5,6 +5,7 @@
 	import ClothCanvas from '$lib/components/ClothCanvas.svelte';
 	import { departments } from '$lib/catalog';
 	import { stock } from '$lib/stock.svelte';
+	import { BRAND, TAGLINE } from '$lib/brand';
 
 	const slides: Slide[] = [
 		{
@@ -83,10 +84,10 @@
 </script>
 
 <svelte:head>
-	<title>PLY — cloth, cut short</title>
+	<title>{BRAND} — {TAGLINE}</title>
 	<meta
 		name="description"
-		content="PLY sells a short list of clothes cut from named mill cloth. Ten pieces, one wardrobe, every weight and weave published."
+		content="{BRAND} — Timeless Style. Defining You."
 	/>
 </svelte:head>
 

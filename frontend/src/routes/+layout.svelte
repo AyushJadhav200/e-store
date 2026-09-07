@@ -6,6 +6,7 @@
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { stock } from '$lib/stock.svelte';
+	import { BRAND, TAGLINE, title } from '$lib/brand';
 
 	// The working stock book is read by every storefront page, so it is opened once here.
 	stock.hydrate();
@@ -31,12 +32,12 @@
 </script>
 
 <svelte:head>
-	<title>PLY</title>
+	<title>{BRAND} — {TAGLINE}</title>
 	<meta
 		name="description"
-		content="PLY sells a short list of clothes cut from named mill cloth. Weight, weave and mill published for every piece."
+		content="{BRAND} — Timeless Style. Defining You. Discover our luxury collection."
 	/>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href="/velcello-logo.jpg" />
 	<meta name="theme-color" content="#f7efec" />
 </svelte:head>
 

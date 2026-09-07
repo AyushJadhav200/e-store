@@ -7,6 +7,7 @@
 	import { fit } from '$lib/fit.svelte';
 	import { saved } from '$lib/saved.svelte';
 	import { departments } from '$lib/catalog';
+	import { BRAND } from '$lib/brand';
 	import Mark from './Mark.svelte';
 
 	let q = $state('');
@@ -106,7 +107,7 @@
 
 		<a class="brand" href={resolve('/')} class:stamping>
 			<Mark size={38} />
-			<span class="word">PLY</span>
+			<span class="word">{BRAND}</span>
 		</a>
 
 		<div class="right">
@@ -287,10 +288,10 @@
 	}
 
 	.word {
-		font-family: var(--font-sans);
-		font-weight: 800;
-		font-size: 1.35rem;
-		letter-spacing: 0.02em;
+		font-family: 'Cinzel', serif;
+		font-weight: 600;
+		font-size: 1.45rem;
+		letter-spacing: 0.24em;
 		line-height: 1;
 		color: var(--primary);
 		text-transform: uppercase;
