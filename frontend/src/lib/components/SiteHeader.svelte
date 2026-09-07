@@ -6,6 +6,7 @@
 	import { bag } from '$lib/bag.svelte';
 	import { fit } from '$lib/fit.svelte';
 	import { saved } from '$lib/saved.svelte';
+	import { auth } from '$lib/auth.svelte';
 	import { departments } from '$lib/catalog';
 	import { BRAND } from '$lib/brand';
 	import Mark from './Mark.svelte';

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import ClothCanvas from './ClothCanvas.svelte';
-	import Mark from './Mark.svelte';
+	import { BRAND, TAGLINE } from '$lib/brand';
 	import type { Weave } from '$lib/catalog';
 
 	export type Slide = {
@@ -31,8 +31,6 @@
 	const go = (n: number) => (i = (n + slides.length) % slides.length);
 
 	onMount(() => {
-		// Listeners are attached here rather than in the markup: the carousel shell
-		// is a region, and pause/steer belong to it without pretending it is a widget.
 		const hold = () => (paused = true);
 		const release = () => (paused = false);
 		function keys(e: KeyboardEvent) {
@@ -47,7 +45,6 @@
 		host.addEventListener('keydown', keys);
 
 		const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-		// One slow turn. Stops the moment anyone is reading or pointing at it.
 		const timer = motion.matches
 			? 0
 			: setInterval(() => {
@@ -65,36 +62,38 @@
 	});
 </script>
 
-<section class="hero" aria-roledescription="carousel" aria-label="The cloth on the roll">
-	<!-- Handlers sit on a plain div: a <section> carries an implicit region role,
-	     and pointer/key listeners do not belong on one. -->
+<section class="hero" aria-roledescription="carousel" aria-label="VELCELLO Hero Collection">
 	<div class="stage" bind:this={host}>
-		<!-- One cloth for the whole carousel: the weave and colour are dyed across
-		     when the slide turns, instead of eight WebGL contexts fighting for the GPU. -->
 		<ClothCanvas
 			weave={active.weave}
 			warp={active.warp}
 			weft={active.weft}
 			threads={82}
-			label="A hanging length of cloth, moving under the cursor"
+			label="VELCELLO interactive fabric backdrop"
 		/>
 
 		<div class="over wrap">
-			<div class="seal"><Mark size={92} layers={16} /></div>
-
-			<div class="say" aria-live="polite">
+			<div class="hero-center" aria-live="polite">
 				{#key active.key}
-					<p class="eyebrow">{active.eyebrow}</p>
-					<h1>
-						{active.title}
-						<span>{active.tail}</span>
-					</h1>
-					<p class="lede">{active.line}</p>
-					<p class="acts">
-						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- href arrives already resolved by the caller -->
-						<a class="cta" href={active.href}>{active.cta}</a>
-						<a class="quiet" href={resolve('/about')}>About us</a>
-					</p>
+					<!-- Brand name BEFORE the logo, in Cinzel luxury serif style -->
+					<h1 class="brand-title">{BRAND}</h1>
+
+					<!-- 2nd Image Emblem in the middle of hero section -->
+					<div class="emblem-card">
+						<img src="/vc-emblem.jpg" alt="{BRAND} Emblem" class="emblem-img" />
+					</div>
+
+					<!-- Tagline under emblem -->
+					<p class="tagline">{TAGLINE}</p>
+
+					<!-- Category/Fabric Chip -->
+					<div class="fabric-chip">{active.eyebrow}</div>
+
+					<!-- Clean CTAs -->
+					<div class="acts">
+						<a class="cta-button" href={active.href}>{active.cta}</a>
+						<a class="quiet-button" href={resolve('/about')}>About Us</a>
+					</div>
 				{/key}
 			</div>
 		</div>
@@ -124,8 +123,6 @@
 				></button>
 			{/each}
 		</div>
-
-		<p class="drag">Move your cursor over the fabric</p>
 	</div>
 </section>
 
@@ -139,7 +136,7 @@
 		isolation: isolate;
 		min-height: min(52rem, calc(100svh - 5.5rem));
 		display: grid;
-		align-items: end;
+		align-items: center;
 		overflow: hidden;
 		outline: none;
 	}
@@ -156,12 +153,10 @@
 		inset: 0;
 		z-index: -1;
 		pointer-events: none;
-		background: linear-gradient(
-			100deg,
-			oklch(0.16 0.04 25 / 0.62) 0%,
-			oklch(0.16 0.04 25 / 0.34) 46%,
-			oklch(0.16 0.04 25 / 0.06) 78%,
-			oklch(0.16 0.04 25 / 0) 100%
+		background: radial-gradient(
+			circle at center,
+			oklch(0.14 0.04 25 / 0.5) 0%,
+			oklch(0.12 0.04 25 / 0.75) 100%
 		);
 	}
 
@@ -169,15 +164,14 @@
 		display: grid;
 		justify-items: center;
 		text-align: center;
-		gap: 1.6rem;
-		padding: 0 0 clamp(5rem, 12vw, 8rem);
-		color: oklch(0.98 0.008 30);
+		padding: 2.5rem 0 clamp(3rem, 8vw, 5rem);
 	}
 
-	.say {
-		display: grid;
-		justify-items: center;
-		text-shadow: 0 0.15rem 1.5rem oklch(0.16 0.05 25 / 0.6);
+	.hero-center {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
 		animation: rise 0.6s var(--ease-out-expo);
 	}
 
@@ -188,37 +182,63 @@
 		}
 	}
 
-	.eyebrow {
-		margin: 0 0 0.9rem;
-		font-size: 0.66rem;
+	.brand-title {
+		font-family: 'Cinzel', serif;
+		font-weight: 700;
+		font-size: clamp(2.4rem, 6.5vw, 4.4rem);
 		letter-spacing: 0.28em;
 		text-transform: uppercase;
-		font-weight: 700;
-		color: oklch(0.93 0.05 42);
+		color: #ffffff;
+		margin: 0 0 1.2rem;
+		line-height: 1.1;
+		text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 	}
 
-	h1 {
-		margin: 0;
-		font-family: var(--font-display);
-		font-weight: 400;
-		font-size: clamp(2.2rem, 5.2vw, 3.6rem);
-		line-height: 1.08;
-		letter-spacing: -0.02em;
-		text-wrap: balance;
-		max-width: 20ch;
+	.emblem-card {
+		width: clamp(120px, 18vw, 170px);
+		height: clamp(120px, 18vw, 170px);
+		border-radius: 28px;
+		overflow: hidden;
+		box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+		border: 2px solid rgba(255, 255, 255, 0.25);
+		background: #fdfaf7;
+		margin-bottom: 1.2rem;
+		transition: transform 0.3s ease;
 	}
 
-	h1 span {
+	.emblem-card:hover {
+		transform: scale(1.05);
+	}
+
+	.emblem-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 		display: block;
-		opacity: 0.78;
 	}
 
-	.lede {
-		margin: 1rem 0 0;
-		max-width: 52ch;
-		font-size: 0.95rem;
-		text-wrap: pretty;
-		opacity: 0.9;
+	.tagline {
+		font-family: 'Cinzel', serif;
+		font-size: clamp(0.75rem, 1.8vw, 1.05rem);
+		font-weight: 600;
+		letter-spacing: 0.32em;
+		text-transform: uppercase;
+		color: oklch(0.95 0.03 40);
+		margin: 0 0 0.8rem;
+		text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+	}
+
+	.fabric-chip {
+		font-size: 0.68rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: oklch(0.92 0.02 30);
+		background: rgba(0, 0, 0, 0.3);
+		padding: 0.35rem 1rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		backdrop-filter: blur(4px);
+		margin-bottom: 1.6rem;
 	}
 
 	.acts {
@@ -226,40 +246,58 @@
 		flex-wrap: wrap;
 		align-items: center;
 		justify-content: center;
-		gap: 0.6rem 1.6rem;
-		margin: 1.5rem 0 0;
+		gap: 1rem;
 	}
 
-	/* A rule under the words, not a filled block. */
-	.cta,
-	.quiet {
+	.cta-button {
 		display: inline-flex;
 		align-items: center;
-		min-height: 2.6rem;
-		color: oklch(0.98 0.008 30);
-		font-size: 0.86rem;
-		font-weight: 500;
-		letter-spacing: 0.02em;
-		text-decoration: underline;
-		text-underline-offset: 0.45em;
-		text-decoration-thickness: 1px;
+		justify-content: center;
+		min-height: 2.8rem;
+		padding: 0 1.8rem;
+		background: oklch(0.98 0.008 30);
+		color: oklch(0.3 0.12 25);
+		font-family: 'Cinzel', serif;
+		font-size: 0.85rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		text-decoration: none;
+		border-radius: 999px;
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+		transition: background-color 0.2s, transform 0.2s;
 	}
 
-	.cta:hover,
-	.quiet:hover {
-		color: oklch(0.98 0.008 30);
-		text-underline-offset: 0.3em;
+	.cta-button:hover {
+		background: #ffffff;
+		transform: translateY(-2px);
 	}
 
-	.quiet {
-		opacity: 0.72;
+	.quiet-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 2.8rem;
+		padding: 0 1.8rem;
+		background: rgba(255, 255, 255, 0.12);
+		color: #ffffff;
+		font-family: 'Cinzel', serif;
+		font-size: 0.85rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		text-decoration: none;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		backdrop-filter: blur(4px);
+		transition: background-color 0.2s, transform 0.2s;
 	}
 
-	.seal {
-		display: none;
+	.quiet-button:hover {
+		background: rgba(255, 255, 255, 0.22);
+		transform: translateY(-2px);
 	}
 
-	/* Vertical index of what is on the roll, set down the right edge. */
 	.spine {
 		display: none;
 		position: absolute;
@@ -300,6 +338,7 @@
 		cursor: pointer;
 		padding: 0;
 		backdrop-filter: blur(3px);
+		border-radius: 50%;
 	}
 
 	.arm:hover {
@@ -308,11 +347,11 @@
 	}
 
 	.back {
-		left: 0.7rem;
+		left: 1rem;
 	}
 
 	.arm.on {
-		right: 0.7rem;
+		right: 1rem;
 	}
 
 	svg {
@@ -353,19 +392,6 @@
 		inset: -0.7rem 0;
 	}
 
-	.drag {
-		position: absolute;
-		left: 50%;
-		bottom: 2.6rem;
-		transform: translateX(-50%);
-		margin: 0;
-		font-size: 0.64rem;
-		letter-spacing: 0.22em;
-		text-transform: uppercase;
-		color: oklch(1 0 0 / 0.55);
-		pointer-events: none;
-	}
-
 	@media (min-width: 760px) {
 		.arm {
 			display: grid;
@@ -376,15 +402,8 @@
 		}
 	}
 
-	@media (min-width: 960px) {
-		.seal {
-			display: block;
-			margin-bottom: 0.4rem;
-		}
-	}
-
 	@media (prefers-reduced-motion: reduce) {
-		.say {
+		.hero-center {
 			animation: none;
 		}
 	}

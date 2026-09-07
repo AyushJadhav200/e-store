@@ -94,7 +94,142 @@ export const WAIST_FIT: Record<string, [number, number]> = {
  * reads whatever is in the working book — so a shop opens with nothing in it and
  * fills up as cloth is cut, rather than with someone else's sample list.
  */
-export const products: Product[] = [];
+export const products: Product[] = [
+	{
+		id: 'vc-101',
+		no: '1AKLVW',
+		name: 'Jacquard Zippered Turtleneck Cardigan',
+		dept: 'knit',
+		cloth: 'Highland Jacquard Mohair Blend',
+		mill: 'Bower Roebuck, Yorkshire',
+		gsm: 580,
+		weave: 'rib',
+		price: 30000000,
+		flat: 'crew',
+		photo: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=1000&auto=format&fit=crop',
+		alt: 'Jacquard Zippered Turtleneck Cardigan',
+		hand: 'Cozy mix of brushed mohair and fluffy cotton chenille depicting a scenic mountain landscape.',
+		notes: [
+			'Full-zip turtleneck cardigan with custom engraved metal pull',
+			'Graphic allover Monogram Highlands jacquard motif',
+			'Ribbed collar, cuffs and waistband',
+			'Dry clean only'
+		],
+		fit: TOP_FIT,
+		sizes: TOPS
+	},
+	{
+		id: 'vc-102',
+		no: '2VL780',
+		name: 'Melton Wool Trench Overcoat',
+		dept: 'coating',
+		cloth: 'Heavy Milled Wool Melton',
+		mill: 'Fox Brothers, Somerset',
+		gsm: 740,
+		weave: 'twill',
+		price: 45000000,
+		flat: 'coat',
+		photo: 'https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1000&auto=format&fit=crop',
+		alt: 'Melton Wool Trench Overcoat',
+		hand: 'Dense milled wool, wind-resistant and structured to layer a knit underneath.',
+		notes: [
+			'Double-breasted front with horn buttons',
+			'Fully lined in cupro silk',
+			'Storm flap and waist tie belt',
+			'Made in Italy'
+		],
+		fit: TOP_FIT,
+		sizes: TOPS
+	},
+	{
+		id: 'vc-103',
+		no: '3VL450',
+		name: 'Sea Island Cotton Poplin Shirt',
+		dept: 'shirting',
+		cloth: 'Sea Island Cotton Poplin',
+		mill: 'Thomas Mason, Bergamo',
+		gsm: 140,
+		weave: 'plain',
+		price: 12000000,
+		flat: 'shirt',
+		photo: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=1000&auto=format&fit=crop',
+		alt: 'Sea Island Cotton Poplin Shirt',
+		hand: 'Silky smooth hand, woven from extra-long staple West Indian Sea Island cotton.',
+		notes: [
+			'Split yoke construction',
+			'Mother-of-pearl buttons',
+			'Curved hem for tucked or untucked wear'
+		],
+		fit: TOP_FIT,
+		sizes: TOPS
+	},
+	{
+		id: 'vc-104',
+		no: '4VL890',
+		name: 'Tailored Cavalry Twill Trouser',
+		dept: 'trousering',
+		cloth: 'Heavy Cavalry Twill',
+		mill: 'Brisbane Moss, Lancashire',
+		gsm: 490,
+		weave: 'moleskin',
+		price: 18000000,
+		flat: 'trouser',
+		photo: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1000&auto=format&fit=crop',
+		alt: 'Tailored Cavalry Twill Trouser',
+		hand: 'Steep diagonal twill with a crisp drape and natural crease retention.',
+		notes: [
+			'High-rise waist with side adjusters',
+			'Unfinished hems for custom tailoring',
+			'Button fly closure'
+		],
+		fit: WAIST_FIT,
+		sizes: WAISTS
+	},
+	{
+		id: 'vc-105',
+		no: '5VL320',
+		name: 'Loopback Organic Sweatshirt',
+		dept: 'jersey',
+		cloth: 'Heavy Loopback Cotton',
+		mill: 'Loopwheeler, Wakayama',
+		gsm: 420,
+		weave: 'loopback',
+		price: 15000000,
+		flat: 'sweat',
+		photo: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=1000&auto=format&fit=crop',
+		alt: 'Loopback Organic Sweatshirt',
+		hand: 'Knitted on vintage wheel machines for zero tension and enduring softness.',
+		notes: [
+			'Flatlock stitched seams',
+			'Ribbed gusset underarms',
+			'Pre-washed to prevent shrinkage'
+		],
+		fit: TOP_FIT,
+		sizes: TOPS
+	},
+	{
+		id: 'vc-106',
+		no: '6VL910',
+		name: 'Indigo Selvedge Denim Trucker',
+		dept: 'denim',
+		cloth: '14oz Raw Selvedge Denim',
+		mill: 'Kuroki Mill, Okayama',
+		gsm: 460,
+		weave: 'twill',
+		price: 28000000,
+		flat: 'jacket',
+		photo: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?q=80&w=1000&auto=format&fit=crop',
+		alt: 'Indigo Selvedge Denim Trucker',
+		hand: 'Stiff raw denim with red selvedge ID line that breaks in over time.',
+		notes: [
+			'Woven on narrow shuttle looms',
+			'Solid brass hardware',
+			'Dual chest flap pockets'
+		],
+		fit: TOP_FIT,
+		sizes: TOPS
+	}
+];
 
 /**
  * The structure a cloth is characteristically woven or knitted in. Used to draw

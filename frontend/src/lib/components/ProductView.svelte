@@ -1,21 +1,26 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { bag } from '$lib/bag.svelte';
-	import { inr, deptName, laddersOnWaist, type Product } from '$lib/catalog';
+	import { saved } from '$lib/saved.svelte';
+	import { inr, deptName, type Product } from '$lib/catalog';
 	import { weaveName } from '$lib/weave';
 	import Cloth from './Cloth.svelte';
 	import Flat from './Flat.svelte';
-	import FitLadder from './FitLadder.svelte';
 
 	let { product }: { product: Product } = $props();
 
-	// The photograph sells it; the flat is what you check the cut against.
 	let view = $state<'photo' | 'flat'>('photo');
 	let size = $state<string | null>(null);
 	let nudge = $state(false);
 	let added = $state(0);
+	let readMore = $state(false);
 
-	// Sizing is a decision, not a default — an unpicked size is the honest state.
+	const isSaved = $derived(saved.has(product.id));
+
+	function toggleSave() {
+		saved.toggle(product.id);
+	}
+
 	function add() {
 		if (!size) {
 			nudge = true;
@@ -39,367 +44,478 @@
 		size = s;
 		nudge = false;
 	}
-
-	const ladderPart = $derived(laddersOnWaist(product) ? 'Waist' : 'Chest');
 </script>
 
-<main id="main" class="pdp wrap">
-	<div class="plate">
-		<div class="frame">
+<main id="main" class="lv-pdp">
+	<!-- Left column: Product Image / View Frame -->
+	<div class="left-hero">
+		<div class="image-stage">
 			{#if view === 'photo'}
-				<img src={product.photo} alt={product.alt} width="1100" height="1467" />
+				<img src={product.photo} alt={product.alt} class="main-image" />
 			{:else}
-				<Flat
-					kind={product.flat}
-					weave={product.weave}
-					pitch={11}
-					label="Technical flat of the {product.name}, drawn over its {product.cloth}"
-				/>
+				<div class="flat-container">
+					<Flat
+						kind={product.flat}
+						weave={product.weave}
+						pitch={11}
+						label="Technical flat of the {product.name}"
+					/>
+				</div>
 			{/if}
-			<p class="stock" aria-hidden="true">PLY / {product.no}</p>
 		</div>
 
-		<div class="views" role="group" aria-label="Views of this piece">
-			<button type="button" class:on={view === 'photo'} onclick={() => (view = 'photo')}>
-				Photo
+		<div class="view-switch">
+			<button type="button" class:active={view === 'photo'} onclick={() => (view = 'photo')}>
+				Photograph
 			</button>
-			<button type="button" class:on={view === 'flat'} onclick={() => (view = 'flat')}>
-				Shape
+			<button type="button" class:active={view === 'flat'} onclick={() => (view = 'flat')}>
+				Technical Cut
 			</button>
 		</div>
 	</div>
 
-	<div class="info">
-		<p class="crumb">
-			<a href={resolve('/shop/[dept]', { dept: product.dept })}>{deptName(product.dept)}</a>
-			<span>·</span>
-			<span>No. {product.no}</span>
-		</p>
-
-		<h1>{product.name}</h1>
-		<p class="price">{inr(product.price)}</p>
-
-		<p class="hand">{product.hand}</p>
-
-		<!-- The ticket carries what a photograph cannot: mill, weight, structure. -->
-		<dl class="ticket">
-			<div>
-				<dt>Fabric</dt>
-				<dd>{product.cloth}</dd>
-			</div>
-			<div>
-				<dt>Mill</dt>
-				<dd>{product.mill}</dd>
-			</div>
-			<div>
-				<dt>Weight</dt>
-				<dd>{product.gsm} gsm</dd>
-			</div>
-			<div>
-				<dt>Weave</dt>
-				<dd>{weaveName[product.weave]}</dd>
-			</div>
-		</dl>
-
-		<FitLadder {product} onpick={pick} />
-
-		<fieldset class:nudge>
-			<legend>Size <span>(by {ladderPart.toLowerCase()})</span></legend>
-			<div class="sizes">
-				{#each product.sizes as s (s)}
-					<label class:on={size === s}>
-						<input
-							type="radio"
-							name="size"
-							value={s}
-							checked={size === s}
-							onchange={() => pick(s)}
+	<!-- Right column: Product Info & Actions (LV Style) -->
+	<div class="right-details">
+		<div class="details-inner">
+			<div class="ref-row">
+				<span class="ref-code">{product.no}</span>
+				<button
+					type="button"
+					class="wishlist-button"
+					onclick={toggleSave}
+					aria-label={isSaved ? 'Remove from Wishlist' : 'Add to Wishlist'}
+				>
+					<svg viewBox="0 0 24 24" class="heart-icon" class:saved={isSaved}>
+						<path
+							d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+							fill={isSaved ? 'var(--primary)' : 'none'}
+							stroke="currentColor"
+							stroke-width="1.6"
 						/>
-						{s}
-					</label>
-				{/each}
+					</svg>
+				</button>
 			</div>
-			{#if nudge}
-				<p class="warn" role="alert">Pick a size first.</p>
+
+			<h1 class="product-title">{product.name}</h1>
+
+			<div class="price-block">
+				<span class="price-val">{inr(product.price)}</span>
+				<span class="mrp-note">(M.R.P. incl. of all taxes)</span>
+			</div>
+
+			<!-- Size Selection & Size Guide link -->
+			<div class="size-section" class:nudge>
+				<div class="size-header">
+					<span class="size-label">Sizes</span>
+					<a href={resolve('/size-guide')} class="size-guide-link">Size guide</a>
+				</div>
+
+				<div class="size-options">
+					{#each product.sizes as s (s)}
+						<button
+							type="button"
+							class="size-pill"
+							class:selected={size === s}
+							onclick={() => pick(s)}
+						>
+							{s}
+						</button>
+					{/each}
+				</div>
+
+				{#if nudge}
+					<p class="nudge-warn">Please select a size first.</p>
+				{/if}
+			</div>
+
+			<!-- Black Pill Main Action Button -->
+			<button type="button" class="black-pill-btn" onclick={add}>
+				{added > 0 ? 'Added to Bag' : 'Contact Concierge Services'}
+			</button>
+
+			{#if added > 0}
+				<p class="added-notice">
+					Size {size} added to your bag. <a href={resolve('/bag')}>View Bag</a>
+				</p>
 			{/if}
-		</fieldset>
 
-		<button type="button" class="add" onclick={add}>
-			{added > 0 ? 'Added to bag' : 'Add to bag'}
-		</button>
+			<!-- Concierge Support Info -->
+			<div class="concierge-box">
+				<p>
+					Our Digital Concierge is available if you have any questions on this product.
+					<a href={resolve('/contact')}>Contact us</a>.
+				</p>
+			</div>
 
-		{#if added > 0}
-			<p class="after" aria-live="polite">
-				{size} added. <a href={resolve('/bag')}>View bag</a>
-			</p>
-		{/if}
+			<!-- Product Description & Accordion -->
+			<div class="description-section">
+				<p class="hand-text">{product.hand}</p>
 
-		<ul class="notes">
-			{#each product.notes as note (note)}
-				<li>{note}</li>
-			{/each}
-		</ul>
+				{#if readMore}
+					<div class="extra-details">
+						<ul class="notes-list">
+							{#each product.notes as note (note)}
+								<li>{note}</li>
+							{/each}
+						</ul>
 
-		<Cloth weave={product.weave} caption="{product.cloth} · {product.gsm} gsm · hold to zoom in" />
+						<dl class="fabric-specs">
+							<div>
+								<dt>Fabric</dt>
+								<dd>{product.cloth}</dd>
+							</div>
+							<div>
+								<dt>Mill</dt>
+								<dd>{product.mill}</dd>
+							</div>
+							<div>
+								<dt>Weight</dt>
+								<dd>{product.gsm} gsm</dd>
+							</div>
+							<div>
+								<dt>Weave</dt>
+								<dd>{weaveName[product.weave]}</dd>
+							</div>
+						</dl>
 
-		<p class="tiny">
-			<a href={resolve('/shipping')}>Delivery</a> ·
-			<a href={resolve('/returns')}>Returns</a> ·
-			<a href={resolve('/care')}>Care</a>
-		</p>
+						<div class="loupe-wrap">
+							<Cloth weave={product.weave} caption="{product.cloth} · {product.gsm} gsm" />
+						</div>
+					</div>
+				{/if}
+
+				<button type="button" class="read-more-btn" onclick={() => (readMore = !readMore)}>
+					{readMore ? 'Read Less' : 'Read More'}
+				</button>
+			</div>
+		</div>
 	</div>
 </main>
 
 <style>
-	.pdp {
+	.lv-pdp {
 		display: grid;
-		gap: 1.6rem;
-		padding: 1.4rem 0 4rem;
-		align-items: start;
+		grid-template-columns: 1fr;
+		min-height: 80vh;
+		background: #fcfcfc;
 	}
 
-	.frame {
+	@media (min-width: 900px) {
+		.lv-pdp {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	/* Left side */
+	.left-hero {
+		background: #f6f6f6;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem 1rem;
 		position: relative;
+	}
+
+	.image-stage {
+		width: 100%;
+		max-width: 620px;
+		aspect-ratio: 4 / 5;
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.main-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		background: #efefef;
+	}
+
+	.flat-container {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		background: var(--surface);
 	}
 
-	.frame img {
-		display: block;
-		width: 100%;
-		aspect-ratio: 4 / 5;
-		object-fit: cover;
-	}
-
-	.views {
+	.view-switch {
 		display: flex;
-		gap: 0.4rem;
-		margin-top: 0.5rem;
+		gap: 0.5rem;
+		margin-top: 1rem;
 	}
 
-	.views button {
-		min-height: 2.5rem;
-		padding: 0 0.8rem;
-		border: 1px solid color-mix(in oklch, var(--ink) 22%, transparent);
-		background: none;
-		color: var(--muted);
-		font: inherit;
-		font-size: 0.85rem;
+	.view-switch button {
+		padding: 0.4rem 0.9rem;
+		font-size: 0.8rem;
 		font-weight: 600;
+		border: 1px solid #ddd;
+		background: #fff;
+		color: #555;
 		cursor: pointer;
+		border-radius: 999px;
+		transition: all 0.2s ease;
 	}
 
-	.views button.on {
-		border-color: var(--primary);
+	.view-switch button.active {
+		border-color: #000;
+		background: #000;
+		color: #fff;
+	}
+
+	/* Right side */
+	.right-details {
+		padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 5vw, 4.5rem);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		background: #ffffff;
+	}
+
+	.details-inner {
+		max-width: 480px;
+		width: 100%;
+		margin: 0 auto;
+	}
+
+	.ref-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.8rem;
+	}
+
+	.ref-code {
+		font-size: 0.8rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: #666;
+		font-weight: 600;
+	}
+
+	.wishlist-button {
+		border: 0;
+		background: none;
+		cursor: pointer;
+		padding: 0.2rem;
+		color: #222;
+		transition: transform 0.2s ease;
+	}
+
+	.wishlist-button:hover {
+		transform: scale(1.15);
+	}
+
+	.heart-icon {
+		width: 1.3rem;
+		height: 1.3rem;
+	}
+
+	.heart-icon.saved {
 		color: var(--primary);
 	}
 
-	.stock {
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		margin: 0;
-		background: var(--primary);
-		color: var(--on-primary);
-		font-size: 0.72rem;
-		font-weight: 700;
-		letter-spacing: 0.18em;
-		padding: 0.3rem 0.7rem;
+	.product-title {
+		font-family: 'Cinzel', serif;
+		font-size: clamp(1.6rem, 3vw, 2.2rem);
+		font-weight: 500;
+		line-height: 1.25;
+		letter-spacing: 0.03em;
+		color: #111;
+		margin: 0 0 1rem;
 	}
 
-	.crumb {
-		display: flex;
-		gap: 0.4rem;
-		margin: 0;
-		font-size: 0.85rem;
-		color: var(--muted);
-		letter-spacing: 0.04em;
+	.price-block {
+		margin-bottom: 2rem;
 	}
 
-	h1 {
-		margin: 0.3rem 0 0;
-		font-family: var(--font-display);
-		font-size: clamp(2rem, 5.5vw, 3.2rem);
-		font-weight: 400;
-		letter-spacing: -0.02em;
-		line-height: 1.05;
-		text-wrap: balance;
-	}
-
-	.price {
-		margin: 0.5rem 0 0;
+	.price-val {
 		font-size: 1.3rem;
 		font-weight: 700;
-		font-variant-numeric: tabular-nums;
+		color: #111;
 	}
 
-	.hand {
-		margin: 1rem 0 0;
-		max-width: 52ch;
-		text-wrap: pretty;
+	.mrp-note {
+		display: block;
+		font-size: 0.78rem;
+		color: #777;
+		margin-top: 0.2rem;
 	}
 
-	.ticket {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 0.7rem 1.2rem;
-		margin: 1.3rem 0 0;
-		padding: 0.9rem 0;
-		border-top: 1px solid color-mix(in oklch, var(--ink) 20%, transparent);
-		border-bottom: 1px solid color-mix(in oklch, var(--ink) 20%, transparent);
+	/* Sizes */
+	.size-section {
+		margin-bottom: 1.8rem;
 	}
 
-	dt {
-		font-size: 0.7rem;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: var(--muted);
+	.size-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.6rem;
 	}
 
-	dd {
-		margin: 0.15rem 0 0;
+	.size-label {
+		font-size: 0.88rem;
+		font-weight: 600;
+		color: #222;
+	}
+
+	.size-guide-link {
+		font-size: 0.82rem;
+		color: #444;
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.size-options {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.size-pill {
+		min-width: 3.2rem;
+		height: 2.6rem;
+		border: 1px solid #ccc;
+		background: #fff;
+		color: #222;
+		font-weight: 600;
+		font-size: 0.88rem;
+		cursor: pointer;
+		border-radius: 4px;
+		transition: all 0.2s ease;
+	}
+
+	.size-pill:hover {
+		border-color: #000;
+	}
+
+	.size-pill.selected {
+		border-color: #000;
+		background: #000;
+		color: #fff;
+	}
+
+	.nudge-warn {
+		font-size: 0.82rem;
+		color: var(--primary);
+		margin-top: 0.4rem;
 		font-weight: 600;
 	}
 
-	fieldset {
+	/* Black Pill Button */
+	.black-pill-btn {
+		width: 100%;
+		min-height: 3.3rem;
+		background: #000000;
+		color: #ffffff;
 		border: 0;
-		padding: 1.3rem 0 0;
-		margin: 0;
+		border-radius: 999px;
+		font-family: var(--font-sans);
+		font-size: 0.95rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		cursor: pointer;
+		transition: background-color 0.2s, transform 0.15s;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	}
 
-	legend {
-		font-weight: 700;
+	.black-pill-btn:hover {
+		background: #222222;
+		transform: translateY(-1px);
+	}
+
+	.added-notice {
+		font-size: 0.85rem;
+		color: #444;
+		margin-top: 0.6rem;
+		text-align: center;
+	}
+
+	/* Concierge box */
+	.concierge-box {
+		margin-top: 2rem;
+		padding: 1.2rem 0;
+		border-top: 1px solid #eee;
+		border-bottom: 1px solid #eee;
+		font-size: 0.85rem;
+		color: #666;
+		line-height: 1.5;
+	}
+
+	.concierge-box a {
+		color: #111;
+		font-weight: 600;
+		text-decoration: underline;
+	}
+
+	/* Description & accordion */
+	.description-section {
+		margin-top: 1.5rem;
+	}
+
+	.hand-text {
+		font-size: 0.92rem;
+		color: #444;
+		line-height: 1.6;
+		margin-bottom: 0.8rem;
+	}
+
+	.read-more-btn {
+		border: 0;
+		background: none;
+		color: #111;
+		font-weight: 600;
+		font-size: 0.85rem;
+		text-decoration: underline;
+		cursor: pointer;
 		padding: 0;
 	}
 
-	legend span {
-		font-weight: 400;
-		color: var(--muted);
+	.extra-details {
+		margin-top: 1rem;
+		padding-top: 1rem;
+		border-top: 1px dashed #ddd;
+	}
+
+	.notes-list {
+		margin: 0 0 1.2rem;
+		padding-left: 1.2rem;
+		font-size: 0.88rem;
+		color: #555;
+	}
+
+	.notes-list li {
+		margin-bottom: 0.3rem;
+	}
+
+	.fabric-specs {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.8rem;
+		margin-bottom: 1.2rem;
 		font-size: 0.85rem;
 	}
 
-	.sizes {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.45rem;
-		margin-top: 0.55rem;
+	.fabric-specs dt {
+		color: #888;
+		font-size: 0.72rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
 	}
 
-	label {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		min-width: 3rem;
-		min-height: 2.75rem;
-		border: 1px solid color-mix(in oklch, var(--ink) 25%, transparent);
-		padding: 0 0.6rem;
-		cursor: pointer;
+	.fabric-specs dd {
+		margin: 0;
 		font-weight: 600;
-		font-variant-numeric: tabular-nums;
+		color: #222;
 	}
 
-	label.on {
-		border-color: var(--primary);
-		background: var(--primary);
-		color: var(--on-primary);
-	}
-
-	label:has(:focus-visible) {
-		outline: 2px solid var(--primary);
-		outline-offset: 3px;
-	}
-
-	fieldset.nudge label {
-		border-color: var(--primary);
-	}
-
-	input {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	.warn {
-		margin: 0.55rem 0 0;
-		color: var(--primary);
-		font-weight: 600;
-		font-size: 0.9rem;
-	}
-
-	.add {
-		margin-top: 1.2rem;
-		min-height: 3.1rem;
-		width: 100%;
-		max-width: 24rem;
-		border: 0;
-		background: var(--primary);
-		color: var(--on-primary);
-		font: inherit;
-		font-weight: 700;
-		letter-spacing: 0.04em;
-		cursor: pointer;
-		transition: background-color 0.18s;
-	}
-
-	.add:hover {
-		background: var(--accent);
-	}
-
-	.after,
-	.tiny {
-		margin: 0.7rem 0 0;
-		font-size: 0.9rem;
-		color: var(--muted);
-	}
-
-	.notes {
-		margin: 1.4rem 0 1.6rem;
-		padding: 0;
-		list-style: none;
-		display: grid;
-		gap: 0.35rem;
-		font-size: 0.92rem;
-	}
-
-	.notes li {
-		padding-left: 1.1rem;
-		position: relative;
-		color: var(--muted);
-	}
-
-	.notes li::before {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 0.55em;
-		width: 0.45rem;
-		height: 0.45rem;
-		background: var(--primary);
-	}
-
-	.tiny {
-		margin-top: 1.4rem;
-	}
-
-	@media (min-width: 880px) {
-		.pdp {
-			grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
-			gap: 3rem;
-			padding-top: 2rem;
-		}
-
-		.plate {
-			position: sticky;
-			top: 8.5rem;
-		}
-
-		/* Five tracks, with the mill given two: a mill name is a place, and it
-		   should not break across four lines to keep a grid tidy. */
-		.ticket {
-			grid-template-columns: repeat(5, minmax(0, 1fr));
-		}
-
-		.ticket div:nth-child(2) {
-			grid-column: span 2;
-		}
+	.loupe-wrap {
+		margin-top: 1rem;
 	}
 </style>

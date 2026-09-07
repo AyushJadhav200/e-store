@@ -1,24 +1,21 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
 	import SiteHeader from '$lib/components/SiteHeader.svelte';
 	import SiteFooter from '$lib/components/SiteFooter.svelte';
+	import MobileLoginModal from '$lib/components/MobileLoginModal.svelte';
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { stock } from '$lib/stock.svelte';
-	import { BRAND, TAGLINE, title } from '$lib/brand';
+	import { auth } from '$lib/auth.svelte';
+	import { BRAND, TAGLINE } from '$lib/brand';
 
-	// The working stock book is read by every storefront page, so it is opened once here.
 	stock.hydrate();
+	auth.hydrate();
 
 	let { children } = $props();
 
-	// The dashboard brings its own shell. The root layout always applies in
-	// SvelteKit, so the shop chrome is skipped here rather than escaped.
 	const isAdmin = $derived(page.url.pathname.startsWith('/admin'));
 
-	// Cross-fade between pages where the browser supports it, so moving through
-	// the stock book feels like turning pages rather than reloading a catalogue.
 	onNavigate((navigation) => {
 		if (!document.startViewTransition) return;
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -48,4 +45,5 @@
 	<SiteHeader />
 	{@render children()}
 	<SiteFooter />
+	<MobileLoginModal />
 {/if}
